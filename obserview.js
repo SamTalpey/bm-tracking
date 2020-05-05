@@ -2,9 +2,11 @@
 // =============================================
 
 // Variables for use
-const coordFileName = 'room3CoordsClean.csv',
+const localStorage = window.localStorage,
+      coordFileName = 'room3CoordsClean.csv',
       imageFileName = 'room3FloorPlan.png',
-      imageScale = 0.5;
+      imageScale = 0.5,
+      markerRadius = 10;
 
 // Generate page
 window.onload = function() {
@@ -12,7 +14,7 @@ window.onload = function() {
   console.log('Initializing page');
   toggleSheet(0);
   loadImage();
-  loadCoords();
+  //loadCoords();
 };
 
 /**
@@ -32,7 +34,7 @@ const toggleSheet = function(isLive) {
     // Create clock/stopwatch
     // TODO
 
-    // Create element to indicate current exhibit
+    // Create element to indicate current display
     // TODO
 
     // Creating live observation submission form 
@@ -107,30 +109,70 @@ const loadImage = function() {
       .remove()
     svg.append('circle')
       .attr('id', 'dot')
-      .attr('cx', x)
-      .attr('cy', y)
-      .attr('r', 1)
+      .attr('cx', coords[0])
+      .attr('cy', coords[1])
+      .attr('r', markerRadius)
       .attr('fill', 'none')
       .attr('stroke', 'red')
       .attr('stroke-width', 1)
     
-    // Use location to find exhibit
+    // Use location to find display
     getLocation(coords[0], coords[1])
   })
 };
 
 /**
- * Function to find the closest exhibit to a marked location
+ * Function to find the closest display to a marked location
  * Saves to window's local storage
  */
 const getLocation = function(x, y) {
-  console.log('Coords:', x, y);
-}
+  console.log('Coordinates:', x, y);
+  let maxDistance = 15;
+  var result;
 
-/**
- * Function to load the coordinate data for the floor plan
- * Requires the file to be present at the same directory level
- */
+  // Unscaled pixel coords
+  let xPx = x / imageScale;
+  let yPx = y / imageScale;
+
+  // Check each of the display coords from csv
+  d3.csv(coordFileName).then(coords => {
+    console.log('Loaded coordinates:', coords);
+
+    // Find display closest to marker
+    for(display in coords) {
+      let dx = display.x - xPx;
+      let dy = display.y - yPx;
+      let distance = Math.sqrt((dx ** 2) + (dy ** 2));
+
+      // Check if match is closest so far
+      if(distance < maxDistance) {
+        maxDistance = distance;
+
+        // Check if display is within marker
+        let left = (dx ** 2) + (dy ** 2);
+        let right = markerRadius ** 2;
+        if(left < right) {
+          console.log('display found', display.display)
+          result = display.display
+        }
+      }
+    }
+
+    // TODO do things with the result
+    console.log('Closest match:', result)
+  })
+};
+
+// /**
+//  * Function to load the coordinate data for the floor plan
+//  * Requires the file to be present at the same directory level
+//  */
+// const loadCoords = function() {
+  // d3.csv(coordFileName).then(coords => {
+  //   console.log(coords[0]);
+  //   localStorage.setItem('displayCoords', coords) // NEEDS TO BE STRING
+  // })
+// };
 
 /**
  * Function to begin the exit interview 
