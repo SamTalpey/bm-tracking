@@ -39,7 +39,7 @@ const toggleSheet = function(isLive) {
     // Create clock/stopwatch
     // TODO
 
-    // Create element to show current exhibit
+    // Create element to indicate current exhibit
     // TODO
 
     // Creating live observation submission form 
@@ -69,11 +69,11 @@ const toggleSheet = function(isLive) {
     other.id = 'obserview-sheet-other';
 
     // Appending init observation elements
-    observiewSheet.innerHTML = 'Demographic: ';
+    observiewSheet.innerHTML = 'Demographic Notes: ';
     observiewSheet.append(demographic);
-    observiewSheet.innerHTML += '<br><br>Size: ';
+    observiewSheet.innerHTML += '<hr>Size: ';
     observiewSheet.append(size);
-    observiewSheet.innerHTML += '<br><br>Other Notes: ';
+    observiewSheet.innerHTML += '<hr>Other Notes: ';
     observiewSheet.append(other);
 
     // Editing button onclicks/text
@@ -85,6 +85,39 @@ const toggleSheet = function(isLive) {
   }
 };
 
+
+/**
+ * Function to add floor plan image and marking
+ * TODO make images selectable
+ */
+const addImage = function() {
+  // Creating SVG for image to be placed in
+  let width = 500;
+  let height = 500;
+  var svg = document.getElementById(floorplan-image).append('svg').attr('width', width).attr('height', height);
+
+  // Appending image
+  let img = svg.append('image')
+    .attr('xlink:href', 'room3FloorPlan.png')
+    .attr('width', width)
+    .attr('height', height)
+
+  // Adding marker on click
+  svg.on('click', addMarker())
+};
+
+/**
+ * Function to add a marker onto a floorplan
+ * Determines exhibit based on location
+ */
+const addMarker = function() {
+  console.log('Adding marker to floorplan');
+  // Use d3
+  // Get pixel location
+  // Calc closest exhibit based on localStorage
+  // update exhibit
+  // add dot to map
+}
 
 /**
  * Function to begin the exit interview 
