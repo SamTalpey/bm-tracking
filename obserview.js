@@ -1,20 +1,18 @@
 // JS file for observation sheet/exit interviews
 // =============================================
 
+// Variables for use
+const coordFileName = 'room3CoordsClean.csv',
+      imageFileName = 'room3FloorPlan.png',
+      imageScale = 0.5;
+
 // Generate page
 window.onload = function() {
   console.log(!!d3);
   console.log('Initializing page');
   toggleSheet(0);
-  addImage();
-};
-
-/**
- * Function to initialize observation sheet
- * May not be necessary due to toggleSheet(isLive)
- */
-const initSheet = function() {
-
+  loadImage();
+  loadCoords();
 };
 
 /**
@@ -82,39 +80,57 @@ const toggleSheet = function(isLive) {
 
 
 /**
- * Function to add floor plan image and marking
+ * Function to load floor plan image and marking
  * TODO make images selectable
  */
-const addImage = function() {
+const loadImage = function() {
   console.log('Adding floorplan image');
   // Creating SVG for image to be placed in
   let width = 980;
   let height = 1066;
   var svg = d3.select(document.getElementById('floorplan-image')).append('svg')
-    .attr('width', width).attr('height', height);
+    .attr('width', width * imageScale).attr('height', height * imageScale);
 
   // Appending image
   svg.append('image')
-    .attr('xlink:href', 'room3FloorPlan.png')
-    .attr('width', width)
-    .attr('height', height)
+    .attr('xlink:href', imageFileName)
+    .attr('width', width * imageScale)
+    .attr('height', height * imageScale)
 
   // Adding marker on click
-  svg.on('click', addMarker())
+  svg.on('click', function() {
+    console.log('Adding marker to floorplan');
+    let coords = d3.mouse(this);
+
+    // Clear prev marker and add new one
+    d3.selectAll('#dot')
+      .remove()
+    svg.append('circle')
+      .attr('id', 'dot')
+      .attr('cx', x)
+      .attr('cy', y)
+      .attr('r', 1)
+      .attr('fill', 'none')
+      .attr('stroke', 'red')
+      .attr('stroke-width', 1)
+    
+    // Use location to find exhibit
+    getLocation(coords[0], coords[1])
+  })
 };
 
 /**
- * Function to add a marker onto a floorplan
- * Determines exhibit based on location
+ * Function to find the closest exhibit to a marked location
+ * Saves to window's local storage
  */
-const addMarker = function() {
-  console.log('Adding marker to floorplan');
-  // Use d3
-  // Get pixel location
-  // Calc closest exhibit based on localStorage
-  // update exhibit
-  // add dot to map
+const getLocation = function(x, y) {
+  console.log('Coords:', x, y);
 }
+
+/**
+ * Function to load the coordinate data for the floor plan
+ * Requires the file to be present at the same directory level
+ */
 
 /**
  * Function to begin the exit interview 
