@@ -1,17 +1,11 @@
 // JS file for observation sheet/exit interviews
 // =============================================
 
-// Variables for use
-// var observiewSheet = document.getElementById('obserview-sheet');
-// var clearBtn = document.getElementById('obserview-clearbtn');
-// var submitBtn = document.getElementById('obserview-submitbtn');
-// var observationsBtn = document.getElementById('obserview-observationsbtn');
-// var interviewBtn = document.getElementById('obserview-interviewbtn');
-
 // Generate page
 window.onload = function() {
+  console.log(!!d3);
   console.log('Initializing page');
-  //toggleSheet(0);
+  toggleSheet(0);
   addImage();
 };
 
@@ -78,11 +72,11 @@ const toggleSheet = function(isLive) {
     observiewSheet.append(other);
 
     // Editing button onclicks/text
-    // console.log('changing buttons')
-    // // clearBtn.onclick = '';
-    // // submitBtn.onclick = '';
-    // observationsBtn.onclick = console.log('click');
-    // console.log(observationsBtn);
+    console.log('changing buttons')
+    // clearBtn.onclick = '';
+    // submitBtn.onclick = '';
+    observationsBtn.onclick = console.log('click');
+    console.log(observationsBtn);
   }
 };
 
