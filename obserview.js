@@ -92,9 +92,10 @@ const toggleSheet = function(isLive) {
  * TODO make images selectable
  */
 const addImage = function() {
+  console.log('Adding floorplan image');
   // Creating SVG for image to be placed in
-  let width = 500;
-  let height = 500;
+  let width = 980;
+  let height = 1066;
   var svg = document.getElementById(floorplan-image).append('svg').attr('width', width).attr('height', height);
 
   // Appending image
