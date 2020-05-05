@@ -90,10 +90,11 @@ const addImage = function() {
   // Creating SVG for image to be placed in
   let width = 980;
   let height = 1066;
-  var svg = document.getElementById('floorplan-image').append('svg').attr('width', width).attr('height', height);
+  var svg = d3.select(document.getElementById('floorplan-image')).append('svg')
+    .attr('width', width).attr('height', height);
 
   // Appending image
-  let img = svg.append('image')
+  svg.append('image')
     .attr('xlink:href', 'room3FloorPlan.png')
     .attr('width', width)
     .attr('height', height)
