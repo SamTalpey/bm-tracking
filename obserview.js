@@ -11,7 +11,7 @@
 // Generate page
 window.onload = function() {
   console.log('Initializing page');
-  toggleSheet(0);
+  //toggleSheet(0);
   addImage();
 };
 
@@ -78,11 +78,11 @@ const toggleSheet = function(isLive) {
     observiewSheet.append(other);
 
     // Editing button onclicks/text
-    console.log('changing buttons')
-    // clearBtn.onclick = '';
-    // submitBtn.onclick = '';
-    observationsBtn.onclick = console.log('click');
-    console.log(observationsBtn);
+    // console.log('changing buttons')
+    // // clearBtn.onclick = '';
+    // // submitBtn.onclick = '';
+    // observationsBtn.onclick = console.log('click');
+    // console.log(observationsBtn);
   }
 };
 
