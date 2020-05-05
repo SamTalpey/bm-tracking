@@ -6,13 +6,12 @@ const express = require('express'),
 
 // Middleware to use
 app.use(morgan('dev'));
-app.use(express.static('public'));
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(bodyparser.json());
 
 // Handling routes
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/public/views/index.html')
+  res.sendFile(__dirname + '/index.html')
 })
 
 // Setting the app up to listen on localhost

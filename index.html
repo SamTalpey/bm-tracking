@@ -2,19 +2,27 @@
 <html>
   <head>
     <title>BM Tracking</title>
-    <!--JS Scripts-->
-    <script src="js/obserview.js"></script>
+    <!--Custom JS Scripts-->
+    <script src="obserview.js"></script>
     <!--Required Meta Tags-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!--Bootstrap Style Sheet-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!--Custom Style Sheets-->
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/style.css"/>
   </head>
   <body>
     <!--Webpage starts here-->
-    <h1>British Museum Visitor Tracking Tool</h1>
+    <h1>British Museum Visitor Tracking Tool</h1><hr>
+
+    <!--Div for floor plan and location marking-->
+    <div id="floorplan" class="border border-primary rounded">
+      <h2>Room 3 Floorplan</h2>
+      <div id="floorplan-image" class="border border-primary rounded">
+        <!--Floor plan image dynamically added here-->
+      </div>
+    </div><hr>
 
     <!--Div for submitting observations/exit interview answers-->
     <div id="obserview" class="border border-primary rounded">
