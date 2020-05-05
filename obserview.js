@@ -12,6 +12,7 @@
 window.onload = function() {
   console.log('Initializing page');
   toggleSheet(0);
+  addImage();
 };
 
 /**
