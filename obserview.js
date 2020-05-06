@@ -10,11 +10,9 @@ const localStorage = window.localStorage,
 
 // Generate page
 window.onload = function() {
-  console.log(!!d3);
   console.log('Initializing page');
   toggleSheet(0);
   loadImage();
-  //loadCoords();
 };
 
 /**
@@ -22,7 +20,6 @@ window.onload = function() {
  * Call with true for live observations, and false for init observations
  */
 const toggleSheet = function(isLive) {
-  console.log('Toggling sheet');
   let observiewSheet = document.getElementById('obserview-sheet');
   observiewSheet.innerHTML = '';
   let clearBtn = document.getElementById('obserview-clearbtn');
@@ -86,7 +83,6 @@ const toggleSheet = function(isLive) {
  * TODO make images selectable
  */
 const loadImage = function() {
-  console.log('Adding floorplan image');
   // Creating SVG for image to be placed in
   let width = 980;
   let height = 1066;
@@ -132,21 +128,14 @@ const getLocation = function(x, y) {
   // Unscaled pixel coords
   let xPx = x / imageScale;
   let yPx = y / imageScale;
-  console.log('Scaled pixel coords:', xPx, yPx)
 
   // Check each of the display coords from csv
   d3.csv(coordFileName).then(coords => {
-    console.log('Loaded coordinates:', coords);
-    console.log(coords[0]);
-
     // Find display closest to marker
     for(let i = 0; i < coords.length; i++) {
-      console.log('Specific display:', coords[i]);
       let dx = coords[i].x - xPx;
       let dy = coords[i].y - yPx;
-      console.log('dx, dy:', dx, dy);
       let distance = Math.sqrt((dx ** 2) + (dy ** 2));
-      console.log('Display, distance:', coords[i].display, distance);
 
       // Check if match is closest so far
       if(distance < maxDistance) {
@@ -156,27 +145,16 @@ const getLocation = function(x, y) {
         let left = (dx ** 2) + (dy ** 2);
         let right = (markerRadius * 2) ** 2;
         if(left < right) {
-          console.log('display found', coords[i].display)
+          console.log('Match found: Display', coords[i].display)
           result = coords[i].display
         }
       }
     }
     // Save the result
     console.log('Closest match:', result)
-    document.getElementById('currentDisplay').innerText = result;
+    document.getElementById('currentDisplay').innerText = 'Current Display: ' + (result ? result : 'None');
   })
 };
-
-// /**
-//  * Function to load the coordinate data for the floor plan
-//  * Requires the file to be present at the same directory level
-//  */
-// const loadCoords = function() {
-  // d3.csv(coordFileName).then(coords => {
-  //   console.log(coords[0]);
-  //   localStorage.setItem('displayCoords', coords) // NEEDS TO BE STRING
-  // })
-// };
 
 /**
  * Function to begin the exit interview 
