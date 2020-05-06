@@ -137,8 +137,6 @@ const getLocation = function(x, y) {
   // Check each of the display coords from csv
   d3.csv(coordFileName).then(coords => {
     console.log('Loaded coordinates:', coords);
-    // Trims last item off end (header row)
-    //coords = coords.splice(-1, 1);
     console.log(coords[0]);
 
     // Find display closest to marker
@@ -156,16 +154,16 @@ const getLocation = function(x, y) {
 
         // Check if display is within marker
         let left = (dx ** 2) + (dy ** 2);
-        let right = markerRadius ** 2;
+        let right = (markerRadius * 2) ** 2;
         if(left < right) {
           console.log('display found', coords[i].display)
           result = coords[i].display
         }
       }
     }
-
-    // TODO do things with the result
+    // Save the result
     console.log('Closest match:', result)
+    document.getElementById('currentDisplay').innerText = result;
   })
 };
 
