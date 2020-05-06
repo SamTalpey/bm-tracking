@@ -13,12 +13,13 @@ const localStorage = window.localStorage,
       imageScale = 0.5,
       markerRadius = 10;
 
-// Generate page
-window.onload = function() {
-  console.log('Initializing page');
-  toggleSheet(0);
-  loadImage();
-};
+// // Generate page
+// window.onload = function() {
+//   console.log('Initializing page');
+//   document.getElementById('obserview-interviewbtn').onclick = generateSurvey(false);
+//   toggleSheet(0);
+//   loadImage();
+// };
 
 /**
  * Function to toggle the type of survey on the sheet
@@ -158,7 +159,7 @@ function generateSurvey(isLive) {
   // Exit survey
   else {
     // Create survey object from imported JSON
-    var exitSurvey = new Survey.Model(exitSurveyJSON);
+    window.exitSurvey = new Survey.Model(exitSurveyJSON);
     // Add survey to container
     $('#obserview-sheet').Survey({
       model: exitSurvey,
@@ -167,3 +168,42 @@ function generateSurvey(isLive) {
     });
   }
 };
+
+
+
+var json = {
+  questions: [
+      {
+          type: "radiogroup",
+          name: "car",
+          title: "What car are you driving?",
+          isRequired: true,
+          colCount: 4,
+          choices: [
+              "None",
+              "Ford",
+              "Vauxhall",
+              "Volkswagen",
+              "Nissan",
+              "Audi",
+              "Mercedes-Benz",
+              "BMW",
+              "Peugeot",
+              "Toyota",
+              "Citroen"
+          ]
+      }
+  ]
+};
+
+window.survey = new Survey.Model(json);
+
+survey
+    .onComplete
+    .add(function (result) {
+        document
+            .querySelector('#surveyResult')
+            .textContent = "Result JSON:\n" + JSON.stringify(result.data, null, 3);
+    });
+
+$("#surveyElement").Survey({model: survey});
