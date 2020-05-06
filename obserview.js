@@ -1,10 +1,15 @@
-// JS file for observation sheet/exit interviews
+// JS file for observation sheet/exit surveys
 // =============================================
+
+// Importing survey modules
+import {exitSurveyJSON} from 'survey.js';
 
 // Variables for use
 const localStorage = window.localStorage,
       coordFileName = 'room3CoordsClean.csv',
       imageFileName = 'room3FloorPlan.png',
+      imageWidth = 980,
+      imageHeight = 1066,
       imageScale = 0.5,
       markerRadius = 10;
 
@@ -16,67 +21,25 @@ window.onload = function() {
 };
 
 /**
- * Function to toggle the type of observations on the sheet
- * Call with true for live observations, and false for init observations
+ * Function to toggle the type of survey on the sheet
+ * Call with true for observations, and false for exit survey
  */
 const toggleSheet = function(isLive) {
-  let observiewSheet = document.getElementById('obserview-sheet');
-  observiewSheet.innerHTML = '';
-  let clearBtn = document.getElementById('obserview-clearbtn');
-  let submitBtn = document.getElementById('obserview-submitbtn');
-  let observationsBtn = document.getElementById('obserview-observationsbtn');
-
-  // Setting up live observation form
+  // Observations
   if(isLive) {
-    // Create clock/stopwatch
+    generateSurvey(isLive)
     // TODO
-
-    // Create element to indicate current display
-    // TODO
-
-    // Creating live observation submission form 
-    // TODO make size of text box larger
-    let liveInput = document.createElement('input');
-    liveInput.id = 'obserview-liveInput';
-
-    // Appending elements to sheet
-    observiewSheet.innerHTML += 'Observation Notes: ';
-    observiewSheet.append(liveInput);
-
-    // Editing button onclicks/text
-    // clearBtn.onclick = '';
-    // submitBtn.onclick = '';
-    // observationsBtn.onclick = 'toggleSheet(0)';
-
   }
-  // Setting up initial observation form
+
+  // Exit survey
   else {
-    // Creating init observation elements
-    // TODO: Make size of boxes larger
-    let demographic = document.createElement('input');
-    demographic.id = 'obserview-sheet-demographic';
-    let size = document.createElement('input');
-    size.id = 'obserview-sheet-size';
-    let other = document.createElement('input');
-    other.id = 'obserview-sheet-other';
-
-    // Appending init observation elements
-    observiewSheet.innerHTML = 'Demographic Notes: ';
-    observiewSheet.append(demographic);
-    observiewSheet.innerHTML += '<hr>Size: ';
-    observiewSheet.append(size);
-    observiewSheet.innerHTML += '<hr>Other Notes: ';
-    observiewSheet.append(other);
-
-    // Editing button onclicks/text
-    console.log('changing buttons')
-    // clearBtn.onclick = '';
-    // submitBtn.onclick = '';
-    observationsBtn.onclick = console.log('click');
-    console.log(observationsBtn);
+    generateSurvey(isLive)
   }
 };
 
+// ========================
+// Floor Plan Functionality
+// ========================
 
 /**
  * Function to load floor plan image and marking
@@ -84,8 +47,8 @@ const toggleSheet = function(isLive) {
  */
 const loadImage = function() {
   // Creating SVG for image to be placed in
-  let width = 980;
-  let height = 1066;
+  let width = imageWidth;
+  let height = imageHeight;
   var svg = d3.select(document.getElementById('floorplan-image')).append('svg')
     .attr('width', width * imageScale).attr('height', height * imageScale);
 
@@ -156,15 +119,51 @@ const getLocation = function(x, y) {
   })
 };
 
+// ====================================
+// Observation and Survey Functionality
+// ====================================
+
+// Applying theme
+Survey.StylesManager.applyTheme('bootstrap');
+
 /**
- * Function to begin the exit interview 
+ * Function to upload cached results when connected
+ * Called manually by user
  * TODO
  */
-const beginInterview = function() {
-  // Update buttons and onclicks
-  // Clear obserview-sheet
-  // Prompt for interview template
-  //  Display elapsed time
-  // Update display with interview questions and text fields
-  // Buttons should be clear, submit, init observations, grey out interview button
+function sendDataToServer(survey) {
+  //send Ajax request to your web server.
+  alert('The results are:' + JSON.stringify(survey.data));
+};
+
+/**
+ * Function to cache results of an exit survey to be uploaded when connected
+ * TODO
+ */
+function cacheExitSurvey(survey) {
+  console.log('Caching exit survey results');
+  console.log(survey.data);
+};
+
+/**
+ * Function to display survey
+ * Call with true for observations, false for exit survey
+ */
+const generateSurvey = function(isLive) {
+  // Observations
+  if(isLive) {
+    // TODO
+  }
+
+  // Exit survey
+  else {
+    // Create survey object from imported JSON
+    var exitSurvey = new Survey.Model(exitSurveyJSON);
+    // Add survey to container
+    $('#obserview-sheet').Survey({
+      model: exitSurvey,
+      onComplete: cacheExitSurvey 
+      // TODO determine if () are needed
+    });
+  }
 };
