@@ -2,15 +2,14 @@
 <html>
   <head>
     <title>BM Tracking</title>
-    <!--Custom JS Scripts-->
+    <!--JS Scripts-->
     <script src="obserview.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
     <!--Required Meta Tags-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!--Bootstrap Style Sheet-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!--Custom Style Sheets-->
-    <link rel="stylesheet" type="text/css" href="/style.css"/>
   </head>
   <body>
     <!--Webpage starts here-->
@@ -21,7 +20,11 @@
       <h2>Room 3 Floorplan</h2>
       <div id="floorplan-image" class="border border-primary rounded">
         <!--Floor plan image dynamically added here-->
-      </div>
+      </div><hr>
+      <!--Indicator for current display-->
+      <h4 id="currentDisplay">Current display: None</h4>
+      <!--Clock goes here-->
+      <!--TODO-->
     </div><hr>
 
     <!--Div for submitting observations/exit interview answers-->
@@ -30,7 +33,7 @@
       <div id="obserview-sheet" class="border border-secondary rounded">
         <!--Dynamically created-->
       </div>
-      <br><br>
+      <hr>
       <div id="obserview-buttons">
         <!--Dynamically altered-->
         <button id="obserview-clearbtn" onclick="">Clear</button>
