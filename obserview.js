@@ -126,23 +126,29 @@ const loadImage = function() {
  * Saves to window's local storage
  */
 const getLocation = function(x, y) {
-  console.log('Coordinates:', x, y);
   let maxDistance = 15;
   var result;
 
   // Unscaled pixel coords
   let xPx = x / imageScale;
   let yPx = y / imageScale;
+  console.log('Scaled pixel coords:', xPx, yPx)
 
   // Check each of the display coords from csv
   d3.csv(coordFileName).then(coords => {
     console.log('Loaded coordinates:', coords);
+    // Trims last item off end (header row)
+    //coords = coords.splice(-1, 1);
+    console.log(coords[0]);
 
     // Find display closest to marker
-    for(display in coords) {
-      let dx = display.x - xPx;
-      let dy = display.y - yPx;
+    for(let i = 0; i < coords.length; i++) {
+      console.log('Specific display:', coords[i]);
+      let dx = coords[i].x - xPx;
+      let dy = coords[i].y - yPx;
+      console.log('dx, dy:', dx, dy);
       let distance = Math.sqrt((dx ** 2) + (dy ** 2));
+      console.log('Display, distance:', coords[i].display, distance);
 
       // Check if match is closest so far
       if(distance < maxDistance) {
@@ -152,8 +158,8 @@ const getLocation = function(x, y) {
         let left = (dx ** 2) + (dy ** 2);
         let right = markerRadius ** 2;
         if(left < right) {
-          console.log('display found', display.display)
-          result = display.display
+          console.log('display found', coords[i].display)
+          result = coords[i].display
         }
       }
     }
