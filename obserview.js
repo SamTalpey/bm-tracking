@@ -16,7 +16,7 @@ const localStorage = window.localStorage,
 // Generate page
 window.onload = function() {
   console.log('Initializing page');
-  toggleSheet(0);
+  toggleSheet(1);
   loadImage();
 };
 
