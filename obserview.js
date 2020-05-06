@@ -149,7 +149,7 @@ function cacheExitSurvey(survey) {
  * Function to display survey
  * Call with true for observations, false for exit survey
  */
-const generateSurvey = function(isLive) {
+function generateSurvey(isLive) {
   // Observations
   if(isLive) {
     // TODO
