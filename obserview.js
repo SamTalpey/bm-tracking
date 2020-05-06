@@ -2,7 +2,7 @@
 // =============================================
 
 // Importing survey modules
-import {exitSurveyJSON} from './survey.js';
+import {exitSurveyJSON, observationJSON} from './survey.js';
 
 // Variables for use
 const localStorage = window.localStorage,
@@ -25,16 +25,10 @@ window.onload = function() {
  * Call with true for observations, and false for exit survey
  */
 const toggleSheet = function(isLive) {
-  // Observations
-  if(isLive) {
-    generateSurvey(isLive)
-    // TODO
-  }
-
-  // Exit survey
-  else {
-    generateSurvey(isLive)
-  }
+  // Clear sheet
+  document.getElementById('obserview-sheet').innerHTML = '';
+  // Generate the correct survey form
+  generateSurvey(isLive);
 };
 
 // ========================
@@ -145,6 +139,16 @@ function cacheExitSurvey(survey) {
   console.log(survey.data);
 };
 
+
+/**
+ * Function to cache observations made to be uploaded when connected
+ * TODO
+ */
+function cacheObservation(observation) {
+  console.log('Caching observation results');
+  console.log(observation.data);
+};
+
 /**
  * Function to display survey
  * Call with true for observations, false for exit survey
@@ -152,14 +156,19 @@ function cacheExitSurvey(survey) {
 function generateSurvey(isLive) {
   // Observations
   if(isLive) {
-    // TODO
+    // Create survey object from imported JSON and add to div
+    window.observSurvey = new Survey.Model(observationJSON);
+    $("#obserview-sheet").Survey({
+      model: observSurvey,
+      onComplete: cacheObservation
+      // TODO determine if () needed
+    });
   }
 
   // Exit survey
   else {
-    // Create survey object from imported JSON
+    // Create survey object from imported JSON and add to div
     window.exitSurvey = new Survey.Model(exitSurveyJSON);
-    // Add survey to container
     $('#obserview-sheet').Survey({
       model: exitSurvey,
       onComplete: cacheExitSurvey 
@@ -167,42 +176,3 @@ function generateSurvey(isLive) {
     });
   }
 };
-
-
-
-// var json = {
-//   questions: [
-//       {
-//           type: "radiogroup",
-//           name: "car",
-//           title: "What car are you driving?",
-//           isRequired: true,
-//           colCount: 4,
-//           choices: [
-//               "None",
-//               "Ford",
-//               "Vauxhall",
-//               "Volkswagen",
-//               "Nissan",
-//               "Audi",
-//               "Mercedes-Benz",
-//               "BMW",
-//               "Peugeot",
-//               "Toyota",
-//               "Citroen"
-//           ]
-//       }
-//   ]
-// };
-
-// window.survey = new Survey.Model(json);
-
-// survey
-//     .onComplete
-//     .add(function (result) {
-//         document
-//             .querySelector('#surveyResult')
-//             .textContent = "Result JSON:\n" + JSON.stringify(result.data, null, 3);
-//     });
-
-// $("#surveyElement").Survey({model: survey});
