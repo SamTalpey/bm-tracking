@@ -111,7 +111,7 @@ const loadImage = function() {
       .attr('id', 'dot')
       .attr('cx', coords[0])
       .attr('cy', coords[1])
-      .attr('r', markerRadius)
+      .attr('r', markerRadius + 'px')
       .attr('fill', 'none')
       .attr('stroke', 'red')
       .attr('stroke-width', 1)
