@@ -2,7 +2,7 @@
 // =============================================
 
 // Importing survey modules
-import {exitSurveyJSON} from 'survey.js';
+import {exitSurveyJSON} from './survey.js';
 
 // Variables for use
 const localStorage = window.localStorage,
