@@ -36,7 +36,7 @@ const toggleSheet = function(isLive) {
 
 /**
  * Function to load floor plan image and marking
- * TODO make images selectable
+ * TODO make images selectable (i.e. multiple floor plans)
  */
 const loadImage = function() {
   // Creating SVG for image to be placed in
@@ -75,7 +75,7 @@ const loadImage = function() {
 
 /**
  * Function to find the closest display to a marked location
- * Saves to window's local storage
+ * Saves to indicator on window under map
  */
 const getLocation = function(x, y) {
   let maxDistance = 15;
@@ -120,12 +120,20 @@ const getLocation = function(x, y) {
 Survey.StylesManager.applyTheme('bootstrap');
 
 /**
- * Function to upload cached results when connected
- * Called manually by user
+ * Function to enter the results into a google spreadsheet
+ * @param results should include observations and an exit survey
  * TODO
  */
-function sendDataToServer(survey) {
-  //send Ajax request to your web server.
+function enterResults(results) {
+  console.log('Entering results:', results)
+}
+
+/**
+ * Function to upload cached results when connected
+ * Called manually by user after completing the exit survey
+ * TODO
+ */
+function uploadResults(survey) {
   alert('The results are:' + JSON.stringify(survey.data));
 };
 
@@ -160,28 +168,5 @@ function generateSurvey(isLive) {
   $("#obserview-sheet").Survey({
     model: survey,
     onComplete: (isLive ? cacheObservation : cacheExitSurvey)
-    // TODO determine if () needed
   });
-
-  // // Observations
-  // if(isLive) {
-  //   // Create survey object from imported JSON and add to div
-  //   window.observSurvey = new Survey.Model(observationJSON);
-  //   $("#obserview-sheet").Survey({
-  //     model: observSurvey,
-  //     onComplete: cacheObservation
-  //     // TODO determine if () needed
-  //   });
-  // }
-
-  // // Exit survey
-  // else {
-  //   // Create survey object from imported JSON and add to div
-  //   window.exitSurvey = new Survey.Model(exitSurveyJSON);
-  //   $('#obserview-sheet').Survey({
-  //     model: exitSurvey,
-  //     onComplete: cacheExitSurvey 
-  //     // TODO determine if () are needed
-  //   });
-  // }
 };
