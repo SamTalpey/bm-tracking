@@ -25,8 +25,7 @@ window.onload = function() {
  * Call with true for observations, and false for exit survey
  */
 const toggleSheet = function(isLive) {
-  // Edit clear btn, and refill sheet
-  document.getElementById('obserview-clearbtn').onclick = toggleSheet(isLive);
+  // Clear and remake correct survey
   document.getElementById('obserview-sheet').innerHTML = '';
   generateSurvey(isLive);
 };
