@@ -25,9 +25,9 @@ window.onload = function() {
  * Call with true for observations, and false for exit survey
  */
 const toggleSheet = function(isLive) {
-  // Clear sheet
+  // Edit clear btn, and refill sheet
+  document.getElementById('obserview-clearbtn').onclick = toggleSheet(isLive);
   document.getElementById('obserview-sheet').innerHTML = '';
-  // Generate the correct survey form
   generateSurvey(isLive);
 };
 
@@ -136,7 +136,7 @@ function sendDataToServer(survey) {
  */
 function cacheExitSurvey(survey) {
   console.log('Caching exit survey results');
-  console.log(survey.data);
+  console.log(survey);
 };
 
 
@@ -146,7 +146,9 @@ function cacheExitSurvey(survey) {
  */
 function cacheObservation(observation) {
   console.log('Caching observation results');
-  console.log(observation.data);
+  console.log(observation);
+  // Reset observation form
+  toggleSheet(true);
 };
 
 /**
@@ -154,25 +156,33 @@ function cacheObservation(observation) {
  * Call with true for observations, false for exit survey
  */
 function generateSurvey(isLive) {
-  // Observations
-  if(isLive) {
-    // Create survey object from imported JSON and add to div
-    window.observSurvey = new Survey.Model(observationJSON);
-    $("#obserview-sheet").Survey({
-      model: observSurvey,
-      onComplete: cacheObservation
-      // TODO determine if () needed
-    });
-  }
+  // Create survey object from correct imported JSON and add to div
+  window.survey = new Survey.Model(isLive ? observationJSON : exitSurveyJSON);
+  $("#obserview-sheet").Survey({
+    model: survey,
+    onComplete: (isLive ? cacheObservation : cacheExitSurvey)
+    // TODO determine if () needed
+  });
 
-  // Exit survey
-  else {
-    // Create survey object from imported JSON and add to div
-    window.exitSurvey = new Survey.Model(exitSurveyJSON);
-    $('#obserview-sheet').Survey({
-      model: exitSurvey,
-      onComplete: cacheExitSurvey 
-      // TODO determine if () are needed
-    });
-  }
+  // // Observations
+  // if(isLive) {
+  //   // Create survey object from imported JSON and add to div
+  //   window.observSurvey = new Survey.Model(observationJSON);
+  //   $("#obserview-sheet").Survey({
+  //     model: observSurvey,
+  //     onComplete: cacheObservation
+  //     // TODO determine if () needed
+  //   });
+  // }
+
+  // // Exit survey
+  // else {
+  //   // Create survey object from imported JSON and add to div
+  //   window.exitSurvey = new Survey.Model(exitSurveyJSON);
+  //   $('#obserview-sheet').Survey({
+  //     model: exitSurvey,
+  //     onComplete: cacheExitSurvey 
+  //     // TODO determine if () are needed
+  //   });
+  // }
 };
