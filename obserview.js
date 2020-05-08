@@ -18,9 +18,9 @@ const localStorage = window.localStorage,
 window.onload = function() {
   console.log('Initializing page');
   // Setting button onclicks
-  document.getElementById('obserview-observationbtn').onclick = 'toggleSheet(1)';
-  document.getElementById('obserview-interviewbtn').onclick = 'toggleSheet(0)';
-  document.getElementById('obserview-uploadbtn').onclick = 'console.log("Upload")';
+  document.getElementById('obserview-observationbtn').addEventListener('click', function() {toggleSheet(1)}, false)
+  document.getElementById('obserview-interviewbtn').addEventListener('click', function() {toggleSheet(0)}, false)
+  document.getElementById('obserview-uploadbtn').addEventListener('click', function() {console.log('upload click')}, false)
   loadImage();
 };
 
