@@ -20,7 +20,7 @@ window.onload = function() {
   // Setting button onclicks
   document.getElementById('obserview-observationbtn').addEventListener('click', function() {toggleSheet(1)}, false)
   document.getElementById('obserview-interviewbtn').addEventListener('click', function() {toggleSheet(0)}, false)
-  document.getElementById('obserview-uploadbtn').addEventListener('click', function() {console.log('upload click')}, false)
+  document.getElementById('obserview-uploadbtn').addEventListener('click', function() {console.log(new Date())}, false)
   loadImage();
 };
 
