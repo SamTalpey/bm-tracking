@@ -1,10 +1,10 @@
-// JS file for observation sheet/exit surveys
-// =============================================
+// JS file for application logic and functionality
+// ===============================================
 
 // Importing survey modules
 import {exitSurveyJSON, observationJSON} from './survey.js';
 
-// Variables for use
+// Constants for use
 // TODO import these from survey file
 const localStorage = window.localStorage,
       coordFileName = 'room3CoordsClean.csv',
@@ -12,16 +12,22 @@ const localStorage = window.localStorage,
       imageWidth = 980,
       imageHeight = 1066,
       imageScale = 0.5,
-      markerRadius = 10;
+      markerRadius = 10,
+      initDate = new Date();
+
+// Variable for CSV data to be loaded into
+var coordData = [];
 
 // Generate and set up page
 window.onload = function() {
   console.log('Initializing page');
+  console.log(initDate);
   // Setting button onclicks
   document.getElementById('obserview-observationbtn').addEventListener('click', function() {toggleSheet(1)}, false)
   document.getElementById('obserview-interviewbtn').addEventListener('click', function() {toggleSheet(0)}, false)
   document.getElementById('obserview-uploadbtn').addEventListener('click', function() {console.log(new Date())}, false)
   loadImage();
+  loadCSV();
 };
 
 /**
@@ -37,6 +43,21 @@ const toggleSheet = function(isLive) {
 // ========================
 // Floor Plan Functionality
 // ========================
+
+/**
+ * Function to load coordinates from CSV file
+ * Necessary for offline use
+ */
+const loadCSV = function() {
+  // Load CSV using d3
+  d3.csv(coordFileName).then(coords => {
+    for(let i = 0; i < coords.length; i++) {
+      coordData[i] = coords[i];
+    }
+  })
+  // Logging recorded coordinates
+  console.log('Coords loaded:', coordData)
+};
 
 /**
  * Function to load floor plan image and marking
@@ -89,31 +110,27 @@ const getLocation = function(x, y) {
   let xPx = x / imageScale;
   let yPx = y / imageScale;
 
-  // Check each of the display coords from csv
-  d3.csv(coordFileName).then(coords => {
-    // Find display closest to marker
-    for(let i = 0; i < coords.length; i++) {
-      let dx = coords[i].x - xPx;
-      let dy = coords[i].y - yPx;
-      let distance = Math.sqrt((dx ** 2) + (dy ** 2));
-
-      // Check if match is closest so far
-      if(distance < maxDistance) {
-        maxDistance = distance;
-
-        // Check if display is within marker
-        let left = (dx ** 2) + (dy ** 2);
-        let right = (markerRadius * 2) ** 2;
-        if(left < right) {
-          console.log('Match found: Display', coords[i].display)
-          result = coords[i].display
-        }
+  // Find display closest to marker
+  for(let i = 0; i < coordData; i++) {
+    let dx = coordData[i].x - xPx;
+    let dy = coordData[i].y - yPx;
+    let distance = Math.sqrt((dx ** 2) + (dy ** 2));
+    // Check if match is closest so far
+    if(distance < maxDistance) {
+      maxDistance = distance;
+      // Check if display is within marker
+      let left = (dx ** 2) + (dy ** 2);
+      let right = (markerRadius * 2) ** 2;
+      if(left < right) {
+        console.log('Match found: Display', coordData[i].display)
+        result = coordData[i].display
       }
     }
-    // Save the result
-    console.log('Closest match:', result)
-    document.getElementById('information-display').innerText = 'Current Display: ' + (result ? result : 'None');
-  })
+  }
+
+  // Save the result
+  console.log('Closest match:', result)
+  document.getElementById('information-display').innerText = 'Current Display: ' + (result ? result : 'None');
 };
 
 // ====================================
