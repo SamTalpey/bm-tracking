@@ -22,13 +22,20 @@
       <div id="floorplan-image">
         <!--Floor plan image dynamically added here-->
       </div><hr>
-      <!--Indicator for current display-->
-      <h4 id="currentDisplay">Current display: None</h4>
-      <!--Clock goes here-->
-      <!--TODO-->
     </div><hr>
 
-    <!--Div for submitting observations/exit interview answers-->
+    <!--Div for displaying/entering information to be added to uploads-->
+    <div id="information">
+      <!--Indicator for current display-->
+      <h5 id="information-display">Current display: None</h5>
+      <!--Field for current observer-->
+      <h5>Current observer:</h5>
+      <input type="text" id="information-observer">
+      <!--Clock goes here-->
+      <!--TODO-->
+    </div>
+
+    <!--Div for observations/exit interview-->
     <div id="obserview">
       <div id="obserview-sheet" class="border border-secondary rounded">
         <!--Dynamically created-->
@@ -36,7 +43,8 @@
       <hr>
       <div id="obserview-buttons">
         <!--Dynamically altered-->
-        <button id="obserview-interviewbtn" onclick="">Go to Exit Survey</button>
+        <button id="obserview-observationbtn" onclick="">Begin Observation</button>
+        <button id="obserview-interviewbtn" onclick=""disabled>Go to Exit Survey</button>
         <button id="obserview-uploadbtn" onclick="" disabled>Upload Results</button>
       </div>
     </div>

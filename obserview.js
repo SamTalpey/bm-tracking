@@ -5,6 +5,7 @@
 import {exitSurveyJSON, observationJSON} from './survey.js';
 
 // Variables for use
+// TODO import these from survey file
 const localStorage = window.localStorage,
       coordFileName = 'room3CoordsClean.csv',
       imageFileName = 'room3FloorPlan.png',
@@ -13,10 +14,13 @@ const localStorage = window.localStorage,
       imageScale = 0.5,
       markerRadius = 10;
 
-// Generate page
+// Generate and set up page
 window.onload = function() {
   console.log('Initializing page');
-  toggleSheet(1);
+  // Setting button onclicks
+  document.getElementById('obserview-observationbtn').onclick = toggleSheet(1);
+  document.getElementById('obserview-interviewbtn').onclick = toggleSheet(0);
+  document.getElementById('obserview-uploadbtn').onclick = console.log('"Upload"');
   loadImage();
 };
 
@@ -108,7 +112,7 @@ const getLocation = function(x, y) {
     }
     // Save the result
     console.log('Closest match:', result)
-    document.getElementById('currentDisplay').innerText = 'Current Display: ' + (result ? result : 'None');
+    document.getElementById('information-display').innerText = 'Current Display: ' + (result ? result : 'None');
   })
 };
 
@@ -142,8 +146,9 @@ function uploadResults(survey) {
  * TODO
  */
 function cacheExitSurvey(survey) {
+  // Log results
   console.log('Caching exit survey results');
-  console.log(survey);
+  console.log(survey.data);
 };
 
 
@@ -152,8 +157,16 @@ function cacheExitSurvey(survey) {
  * TODO
  */
 function cacheObservation(observation) {
+  // Log results
   console.log('Caching observation results');
-  console.log(observation);
+  console.log(observation.data);
+
+  // Attatch relevant data
+  // e.g. Name, timestamp, display
+
+  // Store observation
+  localStorage.setItem('key', 'data');
+
   // Reset observation form
   toggleSheet(true);
 };

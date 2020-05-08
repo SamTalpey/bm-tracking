@@ -4,6 +4,7 @@
 // ============================================================
 
 // Exporting surveys as modules
+// TODO Get consts from main file here?
 export {exitSurveyJSON, observationJSON};
 
 // Exit Survey in JSON form
