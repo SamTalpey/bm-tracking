@@ -1,18 +1,11 @@
 // JS file for application logic and functionality
 // ===============================================
 
-// Importing survey modules
-import {exitSurveyJSON, observationJSON} from './survey.js';
+// Importing config module
+import {exitSurveyJSON, observationJSON, spreadsheet, coordFileName, imageFileName, imageWidth, imageHeight, imageScale, markerRadius} from './config.js';
 
-// Constants for use
-// TODO import these from survey file
+// Init storage and date
 const localStorage = window.localStorage,
-      coordFileName = 'room3CoordsClean.csv',
-      imageFileName = 'room3FloorPlan.png',
-      imageWidth = 980,
-      imageHeight = 1066,
-      imageScale = 0.5,
-      markerRadius = 10,
       initDate = new Date();
 
 // Variable for CSV data to be loaded into
@@ -132,9 +125,14 @@ const getLocation = function(x, y) {
   document.getElementById('information-display').innerText = 'Current Display: ' + (result ? result : 'None');
 };
 
-// ================================
-// Offline Local Storage Management
-// ================================
+// ===============
+// Data Management
+// ===============
+
+
+// Function to encode parameters into URI for google sheets
+const encodeParams = (p) => 
+Object.entries(p).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
 
 /**
  * Function to return array of all elements in local storage
@@ -151,10 +149,9 @@ function getLocalStorage() {
 
 /**
  * Function to enter the results into a google spreadsheet
- * @param results should include observations and an exit survey
- * TODO
+ * Called automatically after verifying connection
  */
-function enterResults(results) {
+async function enterResults() {
   console.log('Entering results:', results)
 };
 
@@ -163,7 +160,7 @@ function enterResults(results) {
  * Called manually by user after completing the exit survey
  * TODO
  */
-function uploadResults(survey) {
+function uploadResults() {
   // Ensure user is connected before uploading
   alert('The results are:' + JSON.stringify(survey.data));
 };
