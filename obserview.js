@@ -2,9 +2,9 @@
 // ===============================================
 
 // Importing config module
-import {exitSurveyJSON, observationJSON, spreadsheet, coordFileName, imageFileName, imageWidth, imageHeight, imageScale, markerRadius} from './config.js';
+import {exitSurveyJSON, observationJSON, spreadsheetURI, coordFileName, imageFileName, imageWidth, imageHeight, imageScale, markerRadius} from './config.js';
 
-// Init storage and date
+// Init local storage and date
 const localStorage = window.localStorage,
       initDate = new Date();
 
@@ -18,7 +18,7 @@ window.onload = function() {
   // Setting button onclicks
   document.getElementById('obserview-observationbtn').addEventListener('click', function() {toggleSheet(1)}, false)
   document.getElementById('obserview-interviewbtn').addEventListener('click', function() {toggleSheet(0)}, false)
-  document.getElementById('obserview-uploadbtn').addEventListener('click', function() {console.log(new Date())}, false)
+  document.getElementById('obserview-uploadbtn').addEventListener('click', function() {uploadResults()}, false)
   loadImage();
   loadCSV();
 };
@@ -28,6 +28,14 @@ window.onload = function() {
  * Call with true for observations, and false for exit survey
  */
 const toggleSheet = function(isLive) {
+  // Ensure a name/ID is present first
+  if(document.getElementById('information-name').value === '') {return}
+
+  // Ensure valid buttons are enabled
+  document.getElementById('obserview-observationsbtn').disabled = isLive;
+  document.getElementById('obserview-interviewbtn').disabled = !isLive;
+  document.getElementById('obserview-uploadbtn').disabled = !isLive;
+  
   // Clear and remake correct survey
   document.getElementById('obserview-sheet').innerHTML = '';
   generateSurvey(isLive);
@@ -125,14 +133,9 @@ const getLocation = function(x, y) {
   document.getElementById('information-display').innerText = 'Current Display: ' + (result ? result : 'None');
 };
 
-// ===============
-// Data Management
-// ===============
-
-
-// Function to encode parameters into URI for google sheets
-const encodeParams = (p) => 
-Object.entries(p).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
+// =============================
+// Data Management Functionality
+// =============================
 
 /**
  * Function to return array of all elements in local storage
@@ -141,28 +144,52 @@ function getLocalStorage() {
   let storageArray = [];
   for(let i = 0; i < localStorage.length; i++) {
     item = JSON.parse(localStorage.getItem(localStorage.key(i)));
-    console.log('Found local item:', item);
     storageArray.push(item);
   }
+  console.log('Found local items:', storageArray);
   return storageArray;
 };
+
+// Function to encode parameters into URI for google sheets
+const encodeParams = (p) => 
+Object.entries(p).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
 
 /**
  * Function to enter the results into a google spreadsheet
  * Called automatically after verifying connection
  */
 async function enterResults() {
-  console.log('Entering results:', results)
+  let results = getLocalStorage();
+  console.log('Entering results from localStorage:', results);
+
+  // Get individual parameters for each item
+  for(let i = 0; i < results.length; i++) {
+    let params = results[i];
+
+    // Fetch request to google sheets macro using URI parameters
+    fetch(spreadsheetURI + "?" + encodeParams(params)).then(res => {
+      if(res.status === 200) {
+        // Clear local storage item by key
+        console.log('Data successfully entered');
+        localStorage.removeItem(params.date);
+      }
+    })
+  }
+
+  // Echo current local storage and reset for new study
+  console.log('LocalStorage contents post-cleaning:', getLocalStorage());
+  toggleSheet(true);
 };
 
 /**
  * Function to upload cached results when connected
  * Called manually by user after completing the exit survey
- * TODO
  */
 function uploadResults() {
   // Ensure user is connected before uploading
-  alert('The results are:' + JSON.stringify(survey.data));
+  let online = window.navigator.onLine;
+  if(online) {enterResults()}
+  else {alert('No connection detected, upload aborted')}
 };
 
 // ====================================
