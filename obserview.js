@@ -29,13 +29,15 @@ window.onload = function() {
  */
 const toggleSheet = function(isLive) {
   // Ensure a name/ID is present first
-  if(document.getElementById('information-name').value === '') {return}
+  if(document.getElementById('information-name').value === '') {
+    alert('Please enter the name of the observer or a group name');
+    return;
+  }
 
   // Ensure valid buttons are enabled
-  document.getElementById('obserview-observationsbtn').disabled = isLive;
+  document.getElementById('obserview-observationbtn').disabled = isLive;
   document.getElementById('obserview-interviewbtn').disabled = !isLive;
-  document.getElementById('obserview-uploadbtn').disabled = !isLive;
-  
+
   // Clear and remake correct survey
   document.getElementById('obserview-sheet').innerHTML = '';
   generateSurvey(isLive);
@@ -143,7 +145,7 @@ const getLocation = function(x, y) {
 function getLocalStorage() {
   let storageArray = [];
   for(let i = 0; i < localStorage.length; i++) {
-    item = JSON.parse(localStorage.getItem(localStorage.key(i)));
+    let item = JSON.parse(localStorage.getItem(localStorage.key(i)));
     storageArray.push(item);
   }
   console.log('Found local items:', storageArray);
@@ -160,7 +162,6 @@ Object.entries(p).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
  */
 async function enterResults() {
   let results = getLocalStorage();
-  console.log('Entering results from localStorage:', results);
 
   // Get individual parameters for each item
   for(let i = 0; i < results.length; i++) {
@@ -170,15 +171,14 @@ async function enterResults() {
     fetch(spreadsheetURI + "?" + encodeParams(params)).then(res => {
       if(res.status === 200) {
         // Clear local storage item by key
-        console.log('Data successfully entered');
+        console.log('Data successfully entered, removing item');
         localStorage.removeItem(params.date);
       }
     })
   }
 
-  // Echo current local storage and reset for new study
-  console.log('LocalStorage contents post-cleaning:', getLocalStorage());
-  toggleSheet(true);
+  // Enable going back to observations screen
+  document.getElementById('obserview-observationbtn').disabled = false;
 };
 
 /**
@@ -186,6 +186,8 @@ async function enterResults() {
  * Called manually by user after completing the exit survey
  */
 function uploadResults() {
+  // Check if any data exists
+  if(localStorage.length === 0) {alert('No cached data to upload')}
   // Ensure user is connected before uploading
   let online = window.navigator.onLine;
   if(online) {enterResults()}
