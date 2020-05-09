@@ -78,7 +78,6 @@ const loadImage = function() {
 
   // Adding marker on click
   svg.on('click', function() {
-    console.log('Adding marker to floorplan');
     let coords = d3.mouse(this);
 
     // Clear prev marker and add new one
@@ -111,7 +110,7 @@ const getLocation = function(x, y) {
   let yPx = y / imageScale;
 
   // Find display closest to marker
-  for(let i = 0; i < coordData; i++) {
+  for(let i = 0; i < coordData.length; i++) {
     let dx = coordData[i].x - xPx;
     let dy = coordData[i].y - yPx;
     let distance = Math.sqrt((dx ** 2) + (dy ** 2));
@@ -133,12 +132,22 @@ const getLocation = function(x, y) {
   document.getElementById('information-display').innerText = 'Current Display: ' + (result ? result : 'None');
 };
 
-// ====================================
-// Observation and Survey Functionality
-// ====================================
+// ================================
+// Offline Local Storage Management
+// ================================
 
-// Applying theme
-Survey.StylesManager.applyTheme('bootstrap');
+/**
+ * Function to return array of all elements in local storage
+ */
+function getLocalStorage() {
+  let storageArray = [];
+  for(let i = 0; i < localStorage.length; i++) {
+    item = JSON.parse(localStorage.getItem(localStorage.key(i)));
+    console.log('Found local item:', item);
+    storageArray.push(item);
+  }
+  return storageArray;
+};
 
 /**
  * Function to enter the results into a google spreadsheet
@@ -147,7 +156,7 @@ Survey.StylesManager.applyTheme('bootstrap');
  */
 function enterResults(results) {
   console.log('Entering results:', results)
-}
+};
 
 /**
  * Function to upload cached results when connected
@@ -155,7 +164,39 @@ function enterResults(results) {
  * TODO
  */
 function uploadResults(survey) {
+  // Ensure user is connected before uploading
   alert('The results are:' + JSON.stringify(survey.data));
+};
+
+// ====================================
+// Observation and Survey Functionality
+// ====================================
+
+// Applying theme
+Survey.StylesManager.applyTheme('bootstrap');
+
+/**
+ * Function to cache observations made to be uploaded when connected
+ */
+function cacheObservation(observation) {
+  // Log results
+  console.log('Caching observation results');
+  let data = observation.data;
+
+  // Attatch relevant data
+  data.name = document.getElementById('information-name').value;
+  let displayStringSplit = (document.getElementById('information-display').innerText).split(' ');
+  data.display = displayStringSplit[displayStringSplit.length - 1];
+  let dateStringSplit = (new Date()).toString().split(' ');
+  let dateString = dateStringSplit[0].concat(' ', dateStringSplit[1], ' ', dateStringSplit[2], ' ', dateStringSplit[3], ' ', dateStringSplit[4]);
+  data.date = dateString;
+
+  // Store observation using date as unique key
+  console.log(data);
+  localStorage.setItem(dateString, JSON.stringify(data));
+
+  // Reset observation form
+  toggleSheet(true);
 };
 
 /**
@@ -166,26 +207,6 @@ function cacheExitSurvey(survey) {
   // Log results
   console.log('Caching exit survey results');
   console.log(survey.data);
-};
-
-
-/**
- * Function to cache observations made to be uploaded when connected
- * TODO
- */
-function cacheObservation(observation) {
-  // Log results
-  console.log('Caching observation results');
-  console.log(observation.data);
-
-  // Attatch relevant data
-  // e.g. Name, timestamp, display
-
-  // Store observation
-  localStorage.setItem('key', 'data');
-
-  // Reset observation form
-  toggleSheet(true);
 };
 
 /**
