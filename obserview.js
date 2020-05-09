@@ -179,11 +179,9 @@ Survey.StylesManager.applyTheme('bootstrap');
  * Function to cache observations made to be uploaded when connected
  */
 function cacheObservation(observation) {
-  // Log results
-  console.log('Caching observation results');
   let data = observation.data;
 
-  // Attatch relevant data
+  // Attatch relevant data (Name, display, date/time)
   data.name = document.getElementById('information-name').value;
   let displayStringSplit = (document.getElementById('information-display').innerText).split(' ');
   data.display = displayStringSplit[displayStringSplit.length - 1];
@@ -192,7 +190,7 @@ function cacheObservation(observation) {
   data.date = dateString;
 
   // Store observation using date as unique key
-  console.log(data);
+  console.log('Caching observation results:', data);
   localStorage.setItem(dateString, JSON.stringify(data));
 
   // Reset observation form
@@ -201,12 +199,19 @@ function cacheObservation(observation) {
 
 /**
  * Function to cache results of an exit survey to be uploaded when connected
- * TODO
  */
 function cacheExitSurvey(survey) {
-  // Log results
-  console.log('Caching exit survey results');
-  console.log(survey.data);
+  let data = survey.data;
+
+  // Attatch relevant data (Name, date/time)
+  data.name = document.getElementById('information-name').value;
+  let dateStringSplit = (new Date()).toString().split(' ');
+  let dateString = dateStringSplit[0].concat(' ', dateStringSplit[1], ' ', dateStringSplit[2], ' ', dateStringSplit[3], ' ', dateStringSplit[4]);
+  data.date = dateString;
+
+  // Store survey using date as unique key
+  console.log('Caching exit survey results:', data);
+  localStorage.setItem(dateString, JSON.stringify(data));
 };
 
 /**
