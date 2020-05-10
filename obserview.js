@@ -205,19 +205,31 @@ Survey.StylesManager.applyTheme('bootstrap');
  * Function to cache observations made to be uploaded when connected
  */
 function cacheObservation(observation) {
-  let data = observation.data;
+  // Sort observation data into array
+  let data = Object.entries(observation.data);
+  data.sort()
+  console.log(data);
 
-  // Attatch relevant data (Name, display, date/time)
-  data.name = document.getElementById('information-name').value;
-  let displayStringSplit = (document.getElementById('information-display').innerText).split(' ');
-  data.display = displayStringSplit[displayStringSplit.length - 1];
+  // Get relevant data (Name, timestamp, display)
+  let name = document.getElementById('information-name').value;
   let dateStringSplit = (new Date()).toString().split(' ');
   let dateString = dateStringSplit[0].concat(' ', dateStringSplit[1], ' ', dateStringSplit[2], ' ', dateStringSplit[3], ' ', dateStringSplit[4]);
-  data.date = dateString;
+  let displayStringSplit = (document.getElementById('information-display').innerText).split(' ');
+  let displayString = displayStringSplit[displayStringSplit.length - 1];
+
+  // Store in map for consistent iteration order
+  let dataMap = new Map();
+  dataMap.set('name', name);
+  dataMap.set('date', dateString);
+  dataMap.set('display', displayString);
+  for(let i = 0; i < data.length; i++) {
+    // Observation fields/values
+    dataMap.set(data[i][0], data[i][1]);
+  }
 
   // Store observation using date as unique key
-  console.log('Caching observation results:', data);
-  localStorage.setItem(dateString, JSON.stringify(data));
+  console.log('Caching observation results:', dataMap);
+  localStorage.setItem(dateString, JSON.stringify(dataMap));
 
   // Reset observation form
   toggleSheet(true);
