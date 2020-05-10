@@ -239,7 +239,7 @@ function cacheObservation(observation) {
  */
 function cacheExitSurvey(survey) {
   // Sort survey data into array
-  let data = Object.entries(observation.data);
+  let data = Object.entries(survey.data);
   data.sort()
   console.log('Survey data:', data);
 
@@ -252,7 +252,6 @@ function cacheExitSurvey(survey) {
   let dataMap = new Map();
   dataMap.set('name', name);
   dataMap.set('date', dateString);
-  // TODO need display for formatting?
   for(let i = 0; i < data.length; i++) {
     // Survey fields/values
     dataMap.set(data[i][0], data[i][1]);
