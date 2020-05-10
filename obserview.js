@@ -34,10 +34,6 @@ const toggleSheet = function(isLive) {
     return;
   }
 
-  // Ensure valid buttons are enabled
-  document.getElementById('obserview-observationbtn').disabled = isLive;
-  document.getElementById('obserview-interviewbtn').disabled = !isLive;
-
   // Clear and remake correct survey
   document.getElementById('obserview-sheet').innerHTML = '';
   generateSurvey(isLive);
@@ -167,7 +163,7 @@ async function enterResults() {
   for(let i = 0; i < results.length; i++) {
     let params = results[i];
 
-    // Fetch request to google sheets macro using URI parameters
+    // GET request to google sheets macro web app using URI parameters
     fetch(spreadsheetURI + "?" + encodeParams(params)).then(res => {
       if(res.status === 200) {
         // Clear local storage item by key
@@ -190,8 +186,8 @@ function uploadResults() {
   if(localStorage.length === 0) {alert('No cached data to upload')}
   // Ensure user is connected before uploading
   let online = window.navigator.onLine;
-  if(online) {enterResults()}
-  else {alert('No connection detected, upload aborted')}
+  if(!online) {alert('No connection detected, upload aborted')}
+  else {enterResults()}
 };
 
 // ====================================
@@ -208,7 +204,7 @@ function cacheObservation(observation) {
   // Sort observation data into array
   let data = Object.entries(observation.data);
   data.sort()
-  console.log(data);
+  console.log('Observation data:', data);
 
   // Get relevant data (Name, timestamp, display)
   let name = document.getElementById('information-name').value;
@@ -229,7 +225,10 @@ function cacheObservation(observation) {
 
   // Store observation using date as unique key
   console.log('Caching observation results:', dataMap);
-  localStorage.setItem(dateString, JSON.stringify(dataMap));
+  let dataObj = Object.fromEntries(dataMap);
+  console.log('Storing object:', dataObj);
+  console.log('Stringify:', JSON.stringify(dataObj));
+  localStorage.setItem(dateString, JSON.stringify(dataObj));
 
   // Reset observation form
   toggleSheet(true);
@@ -239,17 +238,32 @@ function cacheObservation(observation) {
  * Function to cache results of an exit survey to be uploaded when connected
  */
 function cacheExitSurvey(survey) {
-  let data = survey.data;
+  // Sort survey data into array
+  let data = Object.entries(observation.data);
+  data.sort()
+  console.log('Survey data:', data);
 
-  // Attatch relevant data (Name, date/time)
-  data.name = document.getElementById('information-name').value;
+  // Get relevant data (Name, timestamp)
+  let name = document.getElementById('information-name').value;
   let dateStringSplit = (new Date()).toString().split(' ');
   let dateString = dateStringSplit[0].concat(' ', dateStringSplit[1], ' ', dateStringSplit[2], ' ', dateStringSplit[3], ' ', dateStringSplit[4]);
-  data.date = dateString;
+
+  // Store in map for consistent iteration order
+  let dataMap = new Map();
+  dataMap.set('name', name);
+  dataMap.set('date', dateString);
+  // TODO need display for formatting?
+  for(let i = 0; i < data.length; i++) {
+    // Survey fields/values
+    dataMap.set(data[i][0], data[i][1]);
+  }
 
   // Store survey using date as unique key
   console.log('Caching exit survey results:', data);
-  localStorage.setItem(dateString, JSON.stringify(data));
+  let dataObj = Object.fromEntries(dataMap);
+  console.log('Storing object:', dataObj);
+  console.log('Stringify:', JSON.stringify(dataObj));
+  localStorage.setItem(dateString, JSON.stringify(dataObj));
 };
 
 /**

@@ -32,16 +32,16 @@ const spreadsheetURI = 'https://script.google.com/macros/s/AKfycby-VIBUUesAfypbD
 //   console.log()
 //   try {
 //     var row = [];
-//     var keys = Object.keys(e);
+//     var keys = Object.keys(e.parameter);
 //     var isLive = !keys.includes('display');
 //     for(var i = 0; i < keys.length; i++) {
 //       row[i] = e.parameter[keys[i]];
-//     } 
+//     }
 //     var ss = SpreadsheetApp.getActiveSpreadsheet();
-//     var sheet = ss.getSheets()[isLive];
+//     var sheet = ss.getSheets()[(isLive ? 1 : 0)];
 //     sheet.appendRow(row);
 //   }
 //   catch (error) {console.error(error);}
 //   finally {lock.releaseLock();}
-//   return ContentService.createTextOutput('Data appended');
+//   return ContentService.createTextOutput('Data Appended:' + row.toString());
 // }
