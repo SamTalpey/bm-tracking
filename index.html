@@ -16,37 +16,37 @@
     <!--Page-wide div for bootstrap container-->
     <div class="container">
       <!--Webpage starts here-->
-      <div id="pageHead" class="d-flex flex-column justify-content-center">
-        <h1>British Museum Visitor Evaluation Tool</h1>
-      </div>
+      <div id="pageHead" class="d-flex flex-column">
+        <h1 class="d-flex justify-content-center">British Museum Visitor Evaluation Tool</h1>
+      </div><hr>
 
       <!--Div for floor plan and location marking-->
-      <div id="floorplan" class="d-flex flex-column justify-content-center">
-        <h2>Floorplan</h2>
-        <div id="floorplan-image">
+      <div id="floorplan" class="d-flex flex-column">
+        <h2 class="d-flex justify-content-center">Floorplan</h2>
+        <div id="floorplan-image" class="d-flex justify-content-center">
           <!--Floor plan image dynamically added here-->
         </div>
       </div>
 
       <!--Div for displaying/entering information to be added to uploads-->
-      <div id="information" class="d-flex flex-column justify-content-center">
+      <div id="information" class="d-flex flex-column">
         <!--Indicator for current display-->
-        <h5 id="information-display">Current Display: N/A</h5>
+        <h5 id="information-display" class="d-flex justify-content-center">Current Display: N/A</h5>
         <!--Field for current observer/group name-->
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row justify-content-center">
           <h5>Current Observer/Group Name:</h5><input type="text" id="information-name">
         </div>
-      </div>
+      </div><hr>
 
       <!--Div for observations/exit interview-->
-      <div id="obserview" class="d-flex flex-column justify-content-center">
-        <div id="obserview-buttons" class="d-flex flex-row">
+      <div id="obserview" class="d-flex flex-column">
+        <div id="obserview-buttons" class="d-flex flex-row justify-content-center">
           <!--Dynamically altered-->
           <button id="obserview-observationbtn">Live Observations</button>
           <button id="obserview-interviewbtn">Go to Exit Survey</button>
           <button id="obserview-uploadbtn">Upload Results</button>
         </div>
-        <div id="obserview-sheet">
+        <div id="obserview-sheet"  class="d-flex justify-content-center">
           <!--Dynamically created-->
         </div>
       </div>
