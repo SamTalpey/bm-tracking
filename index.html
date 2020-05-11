@@ -13,38 +13,42 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
   <body>
-    <!--Webpage starts here-->
-    <h1>British Museum Visitor Evaluation Tool</h1><hr>
+    <!--Page-wide div for bootstrap container-->
+    <div class="container">
+      <!--Webpage starts here-->
+      <div id="pageHead" class="row">
+        <h1>British Museum Visitor Evaluation Tool</h1>
+      </div>
 
-    <!--Div for floor plan and location marking-->
-    <div id="floorplan">
-      <h2>Room 3 Floorplan</h2>
-      <div id="floorplan-image">
-        <!--Floor plan image dynamically added here-->
-      </div><hr>
-    </div><hr>
+      <!--Div for floor plan and location marking-->
+      <div id="floorplan" class="row">
+        <h2>Floorplan</h2>
+        <div id="floorplan-image">
+          <!--Floor plan image dynamically added here-->
+        </div>
+      </div>
 
-    <!--Div for displaying/entering information to be added to uploads-->
-    <div id="information">
-      <!--Indicator for current display-->
-      <h5 id="information-display">Current Display: N/A</h5>
-      <!--Field for current observer/group name-->
-      <h5>Current Observer/Group Name:</h5><input type="text" id="information-name">
+      <!--Div for displaying/entering information to be added to uploads-->
+      <div id="information" class="row">
+        <!--Indicator for current display-->
+        <h5 id="information-display">Current Display: N/A</h5>
+        <!--Field for current observer/group name-->
+        <h5>Current Observer/Group Name:</h5><input type="text" id="information-name">
+      </div>
+
+      <!--Div for observations/exit interview-->
+      <div id="obserview" class="row">
+        <div id="obserview-buttons">
+          <!--Dynamically altered-->
+          <button id="obserview-observationbtn">Live Observations</button>
+          <button id="obserview-interviewbtn">Go to Exit Survey</button>
+          <button id="obserview-uploadbtn">Upload Results</button>
+        </div>
+        <div id="obserview-sheet" class="border border-secondary rounded">
+          <!--Dynamically created-->
+        </div>
+      </div>
     </div>
-
-    <!--Div for observations/exit interview-->
-    <div id="obserview">
-      <div id="obserview-sheet" class="border border-secondary rounded">
-        <!--Dynamically created-->
-      </div>
-      <hr>
-      <div id="obserview-buttons">
-        <!--Dynamically altered-->
-        <button id="obserview-observationbtn">Live Observations</button>
-        <button id="obserview-interviewbtn">Go to Exit Survey</button>
-        <button id="obserview-uploadbtn">Upload Results</button>
-      </div>
-    </div><hr>
 
     <!--Custom JS Scripts-->
     <script type="module" src="./config.js"></script>
