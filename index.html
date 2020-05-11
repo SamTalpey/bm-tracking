@@ -14,7 +14,7 @@
   </head>
   <body>
     <!--Webpage starts here-->
-    <h1>British Museum Visitor Tracking Tool</h1><hr>
+    <h1>British Museum Visitor Evaluation Tool</h1><hr>
 
     <!--Div for floor plan and location marking-->
     <div id="floorplan">
@@ -22,13 +22,17 @@
       <div id="floorplan-image">
         <!--Floor plan image dynamically added here-->
       </div><hr>
-      <!--Indicator for current display-->
-      <h4 id="currentDisplay">Current display: None</h4>
-      <!--Clock goes here-->
-      <!--TODO-->
     </div><hr>
 
-    <!--Div for submitting observations/exit interview answers-->
+    <!--Div for displaying/entering information to be added to uploads-->
+    <div id="information">
+      <!--Indicator for current display-->
+      <h5 id="information-display">Current Display: N/A</h5>
+      <!--Field for current observer/group name-->
+      <h5>Current Observer/Group Name:</h5><input type="text" id="information-name">
+    </div>
+
+    <!--Div for observations/exit interview-->
     <div id="obserview">
       <div id="obserview-sheet" class="border border-secondary rounded">
         <!--Dynamically created-->
@@ -36,13 +40,14 @@
       <hr>
       <div id="obserview-buttons">
         <!--Dynamically altered-->
-        <button id="obserview-interviewbtn" onclick="">Go to Exit Survey</button>
-        <button id="obserview-uploadbtn" onclick="" disabled>Upload Results</button>
+        <button id="obserview-observationbtn">Live Observations</button>
+        <button id="obserview-interviewbtn">Go to Exit Survey</button>
+        <button id="obserview-uploadbtn">Upload Results</button>
       </div>
-    </div>
+    </div><hr>
 
     <!--Custom JS Scripts-->
-    <script type="module" src="./survey.js"></script>
+    <script type="module" src="./config.js"></script>
     <script type="module" src="./obserview.js"></script>
 
     <!--Bootstrap Scripts-->

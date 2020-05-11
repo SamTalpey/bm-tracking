@@ -1,23 +1,26 @@
-// JS file for observation sheet/exit surveys
-// =============================================
+// JS file for application logic and functionality
+// ===============================================
 
-// Importing survey modules
-import {exitSurveyJSON, observationJSON} from './survey.js';
+// Importing config module
+import {exitSurveyJSON, observationJSON, spreadsheetURI, coordFileName, imageFileName, imageWidth, imageHeight, imageScale, markerRadius} from './config.js';
 
-// Variables for use
+// Init local storage and date
 const localStorage = window.localStorage,
-      coordFileName = 'room3CoordsClean.csv',
-      imageFileName = 'room3FloorPlan.png',
-      imageWidth = 980,
-      imageHeight = 1066,
-      imageScale = 0.5,
-      markerRadius = 10;
+      initDate = new Date();
 
-// Generate page
+// Variable for CSV data to be loaded into
+var coordData = [];
+
+// Generate and set up page
 window.onload = function() {
   console.log('Initializing page');
-  toggleSheet(1);
+  console.log(initDate);
+  // Setting button onclicks
+  document.getElementById('obserview-observationbtn').addEventListener('click', function() {toggleSheet(1)}, false)
+  document.getElementById('obserview-interviewbtn').addEventListener('click', function() {toggleSheet(0)}, false)
+  document.getElementById('obserview-uploadbtn').addEventListener('click', function() {uploadResults()}, false)
   loadImage();
+  loadCSV();
 };
 
 /**
@@ -25,6 +28,12 @@ window.onload = function() {
  * Call with true for observations, and false for exit survey
  */
 const toggleSheet = function(isLive) {
+  // Ensure a name/ID is present first
+  if(document.getElementById('information-name').value === '') {
+    alert('Please enter the name of the observer or a group name');
+    return;
+  }
+
   // Clear and remake correct survey
   document.getElementById('obserview-sheet').innerHTML = '';
   generateSurvey(isLive);
@@ -33,6 +42,21 @@ const toggleSheet = function(isLive) {
 // ========================
 // Floor Plan Functionality
 // ========================
+
+/**
+ * Function to load coordinates from CSV file
+ * Necessary for offline use
+ */
+const loadCSV = function() {
+  // Load CSV using d3
+  d3.csv(coordFileName).then(coords => {
+    for(let i = 0; i < coords.length; i++) {
+      coordData[i] = coords[i];
+    }
+  })
+  // Logging recorded coordinates
+  console.log('Coords loaded:', coordData)
+};
 
 /**
  * Function to load floor plan image and marking
@@ -53,7 +77,6 @@ const loadImage = function() {
 
   // Adding marker on click
   svg.on('click', function() {
-    console.log('Adding marker to floorplan');
     let coords = d3.mouse(this);
 
     // Clear prev marker and add new one
@@ -85,31 +108,86 @@ const getLocation = function(x, y) {
   let xPx = x / imageScale;
   let yPx = y / imageScale;
 
-  // Check each of the display coords from csv
-  d3.csv(coordFileName).then(coords => {
-    // Find display closest to marker
-    for(let i = 0; i < coords.length; i++) {
-      let dx = coords[i].x - xPx;
-      let dy = coords[i].y - yPx;
-      let distance = Math.sqrt((dx ** 2) + (dy ** 2));
-
-      // Check if match is closest so far
-      if(distance < maxDistance) {
-        maxDistance = distance;
-
-        // Check if display is within marker
-        let left = (dx ** 2) + (dy ** 2);
-        let right = (markerRadius * 2) ** 2;
-        if(left < right) {
-          console.log('Match found: Display', coords[i].display)
-          result = coords[i].display
-        }
+  // Find display closest to marker
+  for(let i = 0; i < coordData.length; i++) {
+    let dx = coordData[i].x - xPx;
+    let dy = coordData[i].y - yPx;
+    let distance = Math.sqrt((dx ** 2) + (dy ** 2));
+    // Check if match is closest so far
+    if(distance < maxDistance) {
+      maxDistance = distance;
+      // Check if display is within marker
+      let left = (dx ** 2) + (dy ** 2);
+      let right = (markerRadius * 2) ** 2;
+      if(left < right) {
+        console.log('Match found: Display', coordData[i].display)
+        result = coordData[i].display
       }
     }
-    // Save the result
-    console.log('Closest match:', result)
-    document.getElementById('currentDisplay').innerText = 'Current Display: ' + (result ? result : 'None');
-  })
+  }
+
+  // Save the result
+  console.log('Closest match:', result)
+  document.getElementById('information-display').innerText = 'Current Display: ' + (result ? result : 'None');
+};
+
+// =============================
+// Data Management Functionality
+// =============================
+
+/**
+ * Function to return array of all elements in local storage
+ */
+function getLocalStorage() {
+  let storageArray = [];
+  for(let i = 0; i < localStorage.length; i++) {
+    let item = JSON.parse(localStorage.getItem(localStorage.key(i)));
+    storageArray.push(item);
+  }
+  console.log('Found local items:', storageArray);
+  return storageArray;
+};
+
+// Function to encode parameters into URI for google sheets
+const encodeParams = (p) => 
+Object.entries(p).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
+
+/**
+ * Function to enter the results into a google spreadsheet
+ * Called automatically after verifying connection
+ */
+async function enterResults() {
+  let results = getLocalStorage();
+
+  // Get individual parameters for each item
+  for(let i = 0; i < results.length; i++) {
+    let params = results[i];
+
+    // GET request to google sheets macro web app using URI parameters
+    fetch(spreadsheetURI + "?" + encodeParams(params)).then(res => {
+      if(res.status === 200) {
+        // Clear local storage item by key
+        console.log('Data successfully entered, removing item');
+        localStorage.removeItem(params.date);
+      }
+    })
+  }
+
+  // Enable going back to observations screen
+  document.getElementById('obserview-observationbtn').disabled = false;
+};
+
+/**
+ * Function to upload cached results when connected
+ * Called manually by user after completing the exit survey
+ */
+function uploadResults() {
+  // Check if any data exists
+  if(localStorage.length === 0) {alert('No cached data to upload')}
+  // Ensure user is connected before uploading
+  let online = window.navigator.onLine;
+  if(!online) {alert('No connection detected, upload aborted')}
+  else {enterResults()}
 };
 
 // ====================================
@@ -120,42 +198,71 @@ const getLocation = function(x, y) {
 Survey.StylesManager.applyTheme('bootstrap');
 
 /**
- * Function to enter the results into a google spreadsheet
- * @param results should include observations and an exit survey
- * TODO
+ * Function to cache observations made to be uploaded when connected
  */
-function enterResults(results) {
-  console.log('Entering results:', results)
-}
+function cacheObservation(observation) {
+  // Sort observation data into array
+  let data = Object.entries(observation.data);
+  data.sort()
+  console.log('Observation data:', data);
 
-/**
- * Function to upload cached results when connected
- * Called manually by user after completing the exit survey
- * TODO
- */
-function uploadResults(survey) {
-  alert('The results are:' + JSON.stringify(survey.data));
+  // Get relevant data (Name, timestamp, display)
+  let name = document.getElementById('information-name').value;
+  let dateStringSplit = (new Date()).toString().split(' ');
+  let dateString = dateStringSplit[0].concat(' ', dateStringSplit[1], ' ', dateStringSplit[2], ' ', dateStringSplit[3], ' ', dateStringSplit[4]);
+  let displayStringSplit = (document.getElementById('information-display').innerText).split(' ');
+  let displayString = displayStringSplit[displayStringSplit.length - 1];
+
+  // Store in map for consistent iteration order
+  let dataMap = new Map();
+  dataMap.set('name', name);
+  dataMap.set('date', dateString);
+  dataMap.set('display', displayString);
+  for(let i = 0; i < data.length; i++) {
+    // Observation fields/values
+    dataMap.set(data[i][0], data[i][1]);
+  }
+
+  // Store observation using date as unique key
+  console.log('Caching observation results:', dataMap);
+  let dataObj = Object.fromEntries(dataMap);
+  console.log('Storing object:', dataObj);
+  console.log('Stringify:', JSON.stringify(dataObj));
+  localStorage.setItem(dateString, JSON.stringify(dataObj));
+
+  // Reset observation form
+  toggleSheet(true);
 };
 
 /**
  * Function to cache results of an exit survey to be uploaded when connected
- * TODO
  */
 function cacheExitSurvey(survey) {
-  console.log('Caching exit survey results');
-  console.log(survey);
-};
+  // Sort survey data into array
+  let data = Object.entries(survey.data);
+  data.sort()
+  console.log('Survey data:', data);
 
+  // Get relevant data (Name, timestamp)
+  let name = document.getElementById('information-name').value;
+  let dateStringSplit = (new Date()).toString().split(' ');
+  let dateString = dateStringSplit[0].concat(' ', dateStringSplit[1], ' ', dateStringSplit[2], ' ', dateStringSplit[3], ' ', dateStringSplit[4]);
 
-/**
- * Function to cache observations made to be uploaded when connected
- * TODO
- */
-function cacheObservation(observation) {
-  console.log('Caching observation results');
-  console.log(observation);
-  // Reset observation form
-  toggleSheet(true);
+  // Store in map for consistent iteration order
+  let dataMap = new Map();
+  dataMap.set('name', name);
+  dataMap.set('date', dateString);
+  for(let i = 0; i < data.length; i++) {
+    // Survey fields/values
+    dataMap.set(data[i][0], data[i][1]);
+  }
+
+  // Store survey using date as unique key
+  console.log('Caching exit survey results:', data);
+  let dataObj = Object.fromEntries(dataMap);
+  console.log('Storing object:', dataObj);
+  console.log('Stringify:', JSON.stringify(dataObj));
+  localStorage.setItem(dateString, JSON.stringify(dataObj));
 };
 
 /**
