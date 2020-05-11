@@ -21,8 +21,40 @@ const spreadsheetURI = 'https://script.google.com/macros/s/AKfycby-VIBUUesAfypbD
       imageScale = 0.5,
       markerRadius = 10;
 
-/**
- * Macro code for Google Sheets
- * Must be deployed as macro, see README
- * LEAVE COMMENTED HERE
- */
+// /**
+//  * Macro code for Google Sheets
+//  * Must be deployed as macro, see README
+//  * LEAVE COMMENTED HERE
+//  */
+// function doGet(e) {
+//   var lock = LockService.getDocumentLock();
+//   lock.waitLock(10000);
+//   console.log()
+  
+//   try {
+//     // Check if observation or exit survey
+//     var keys = Object.keys(e.parameter);
+//     var isLive = keys.includes('display');
+//     var row = [];
+    
+//     // Extract specific fields (e.g. name, date, display)
+//     row[0] = e.parameter['name'];
+//     row[1] = e.parameter['date'];
+//     if(isLive) {row[2] = e.parameter['display'];}
+    
+//     // Fill in all question values
+//     // NOTE: Built to handle up to 30 questions
+//     for(var i = 1; i < 31; i++) {
+//       row[i + 2] = e.parameter['question' + i];
+//     }
+    
+//     // Get bound spreadsheet and append to correct sheet
+//     var ss = SpreadsheetApp.getActiveSpreadsheet();
+//     var sheet = ss.getSheets()[(isLive ? 0 : 1)];
+//     sheet.appendRow(row);
+//   }
+  
+//   catch (error) {console.error(error);}
+//   finally {lock.releaseLock();}
+//   return ContentService.createTextOutput('Data Appended:' + row.toString());
+// }
